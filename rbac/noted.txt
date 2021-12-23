@@ -5,3 +5,5 @@ _Spring Data Jpa
 _Mysql
 _DevTool
 _Lombok
+_JJWT
+_JAXB
