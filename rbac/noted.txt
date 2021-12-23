@@ -1,0 +1,7 @@
+*** Dependencies:
+_Spring Web
+_Spring Security
+_Spring Data Jpa
+_Mysql
+_DevTool
+_Lombok
