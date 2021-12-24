@@ -39,7 +39,9 @@ public class HelloController {
                 )
             );
         } catch (BadCredentialsException e) {
-            return ResponseEntity.ok("Incorrect Password");
+            return ResponseEntity.ok("Incorrect Username or Password");
+        } catch (Exception e) {
+            return ResponseEntity.ok(e.getMessage());
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
