@@ -7,3 +7,6 @@ _DevTool
 _Lombok
 _JJWT
 _JAXB
+
+
+*** RBAC Authorize By RBAC Data In Database. Not By Roles In JWT TOKEN

@@ -1,5 +1,6 @@
 package com.pangsoramdepo.rbac.filter;
 
+import com.pangsoramdepo.rbac.config.ApplicationProperties;
 import com.pangsoramdepo.rbac.service.UserDetailServiceImp;
 import com.pangsoramdepo.rbac.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ import java.io.IOException;
 public class RequestFilter extends OncePerRequestFilter {
 
     @Autowired
+	private ApplicationProperties applicationProperties;
+
+    @Autowired
     UserDetailServiceImp userDetailService;
 
     @Autowired
@@ -27,12 +31,12 @@ public class RequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorizationHeader = request.getHeader("Authorization");
+        String authorizationHeader = request.getHeader(applicationProperties.getJwtHeader());
         String username = null;
         String token = null;
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.replace("Bearer ","");
+        if (authorizationHeader != null && authorizationHeader.startsWith(applicationProperties.getJwtTokenPrefix())) {
+            token = authorizationHeader.replace(applicationProperties.getJwtTokenPrefix(),"");
             username = jwtUtil.extractUsername(token);
         }
 

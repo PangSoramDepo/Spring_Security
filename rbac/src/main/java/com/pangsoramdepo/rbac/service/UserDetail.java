@@ -1,6 +1,5 @@
 package com.pangsoramdepo.rbac.service;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,8 +24,8 @@ public class UserDetail implements UserDetails {
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.active = user.isActive();
-        this.authorities = Arrays.stream(user.getRoles().split(","))
-                    .map(SimpleGrantedAuthority::new)
+        this.authorities = user.getRoles().stream()
+                    .map(obj -> new SimpleGrantedAuthority("ROLE_" + obj.getName()))
                     .collect(Collectors.toList());
     }
 
