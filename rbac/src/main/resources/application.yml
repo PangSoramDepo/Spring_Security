@@ -1,0 +1,8 @@
+zuul:
+  #Service will be mapped under the /api URI
+  prefix: /api
+  routes:
+    user-service:
+      path: /users/**
+      serviceId: USER-SERVICE
+      stripPrefix: false

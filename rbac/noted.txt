@@ -10,3 +10,10 @@ _JAXB
 
 
 *** RBAC Authorize By RBAC Data In Database. Not By Roles In JWT TOKEN
+
+*** Spring Cloud Gateway Conflict With Spring Security, To Solve This Use Zuul API Gateway Instead
+
+*** RBAC Spring Security Doesn't Work With Micro Services
+
+https://www.baeldung.com/spring-security-zuul-oauth-jwt
+https://github.com/90rajibgarai/spring-security-with-zuul-api-gateway

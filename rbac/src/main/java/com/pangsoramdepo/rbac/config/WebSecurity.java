@@ -1,7 +1,14 @@
 package com.pangsoramdepo.rbac.config;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.pangsoramdepo.rbac.filter.RequestFilter;
+import com.pangsoramdepo.rbac.model.AccessControl;
+import com.pangsoramdepo.rbac.repo.AccessControlRepository;
 import com.pangsoramdepo.rbac.service.UserDetailServiceImp;
+import com.pangsoramdepo.rbac.util.AccessControlEnum;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +31,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Autowired
     RequestFilter requestFilter;
 
+    @Autowired
+    AccessControlRepository accessControlRepository;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailService);
@@ -31,11 +41,23 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // GET THE DETERMINATION FROM DATABASE FOR DETERMINE THE RIGHT FOR EXECUTE THE END POINT
+        List<AccessControl> accessControls = accessControlRepository.findAll();
+        for (AccessControl accessControl : accessControls) {
+            if (accessControl.getAccessType().equals(AccessControlEnum.PERMIT.name()))
+                http.authorizeRequests().antMatchers(accessControl.getApi()).permitAll();
+            else
+                http.authorizeRequests().antMatchers(accessControl.getApi()).hasAnyRole(accessControl.getRoles().stream().map(obj -> obj.getName()).collect(Collectors.toList()).toArray(new String[0]));
+        }
+
+        // DISABLE CSRF AND SET SESSION IS STATELESS TO MAKE SURE NO CACHE IN THE SESSION
         http.csrf().disable()
-                .authorizeRequests().antMatchers("/api/authenticate").permitAll()
+                .authorizeRequests()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        // SET REQUEST FILTER FOR VALIDATION JWT AND USER
         http.addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
